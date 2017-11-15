@@ -1,4 +1,6 @@
 library(readxl)
+library(NbClust)
+library(beepr)
 
 whiteWineData <- read_excel("~/Desktop/Courses/Data Mining and Machine Learning/CW1/Whitewine.xlsx")
 
@@ -12,11 +14,16 @@ scaleWineData <- function(data){
   return(scaledData)
 } #Returns: Scaled Data
 
+scaledWhiteWine <- scaleWineData(whiteWineData)
+
 idealNumberOfClusters <- function(scaledData){
   
   clusterSuggestion <- NbClust(scaledData, min.nc = 2, max.nc = 10, method = "kmeans")
   return(clusterSuggestion)
 } #Returns: clusterSuggestion
+
+clusterSuggestion <- idealNumberOfClusters(scaledWhiteWine)
+beep("coin")
 
 ## Bar plot if in case
 barplot(table(clusterSuggestion$Best.nc[1,]), ylab = "Number of Criteria", xlab = "Number of Clusters",
@@ -32,7 +39,8 @@ howManyClustersYouNeed <- function(scaledData,numberOfCluster){
   return(clustersWanted)
 } #Returns: Output of kmeans
 
-parcoord(scaledData, clustersWanted$cluster)
+clustersWanted <- howManyClustersYouNeed(scaledWhiteWine,2)
+parcoord(scaledWhiteWine, clustersWanted$cluster)
 
 validation <- function(data,kmeansOutput){
   
@@ -43,6 +51,8 @@ validation <- function(data,kmeansOutput){
   randIndex(confuseTable)
   
 }
+
+validation(whiteWineData, clustersWanted)
 
 ## Messy things
 
@@ -103,14 +113,15 @@ corrplot(correlationWine, "pie", "lower")
 
 library(neuralnet)
 library(NeuralNetTools)
+library(reshape2)
 
 library(readxl)
 Exchange <- read_excel("~/Desktop/Courses/Data Mining and Machine Learning/CW1/Exchange.xlsx")
 
 exchangeRate <- Exchange$`USD/EUR`
 
-exchangeRateTrain <- exchangeRate[1:320]
-exchangeRateTest <- exchangeRate[321:390]
+exchangeRateTrain <- exchangeRate[1:320] # Training Dataset
+exchangeRateTest <- exchangeRate[321:390] # Testing Dataset
 
 firstDay <- 1:(length(exchangeRateTrain)-3)
 secondDay <- 1:(length(exchangeRateTrain)-3)
@@ -128,10 +139,12 @@ for(i in 1:(length(exchangeRateTrain)-3)){
   counter = counter +1
 }
 
-exchangeTrainingData <- as.data.frame(cbind(firstDay,secondDay,thirdDay,predictionDay))
+exchangeTrainingData <- as.data.frame(cbind(firstDay,secondDay,thirdDay,predictionDay)) 
 colnames(exchangeTrainingData) <- c("FirstInput", "SecondInput", "ThirdInput", "Output")
 
 exchangeNeuralNet <- neuralnet(Output~FirstInput + SecondInput + ThirdInput, exchangeTrainingData, hidden = 2)
+
+plot(exchangeNeuralNet)
 
 trainOutput <- cbind(as.data.frame(predictionDay), as.data.frame(exchangeNeuralNet$net.result), id= 1:length(predictionDay))
 colnames(trainOutput) <- c("Expected Output", "Predicted Output", "ID")
@@ -164,11 +177,12 @@ colnames(exchangeTestData) <- c("FirstInput", "SecondInput", "ThirdInput")
 
 exchangeResults <- compute(exchangeNeuralNet, as.data.frame(exchangeTestData))
 
-cleanOutput <- cbind(as.data.frame(exchangeRateTest[3:68]), as.data.frame(exchangeResults$net.result), id= 1:length(firstDayPred))
+cleanOutput <- cbind(as.data.frame(exchangeRateTest[1:66]), as.data.frame(exchangeResults$net.result), id= 1:length(firstDayPred))
 colnames(cleanOutput) <- c("Expected Output", "Predicted Output", "ID")
 print(cleanOutput)
 
-cor(exchangeRateTest[3:68], exchangeResults$net.result)
+errorOnNN <- sqrt(mean((exchangeResults$net.result - exchangeRateTest[1:66])^2))
+errorOnNN
 
 plot(cleanOutput)
 meltedOutput <- melt(cleanOutput, id = 'ID')
@@ -187,6 +201,14 @@ meltedCumulativeOutput <- melt(cumulativeOutput, id = 'cumID')
 ggplot(data=meltedCumulativeOutput, aes(x=cumID, y=value, color=variable)) +
   geom_line()
 
+library(caret)
+
+model_nn <- train(exchangeTrainingData[,1:3], exchangeTrainingData[,4], method = 'neuralnet', 
+                    preProcess = c("center", "scale"))
+
+predictions <- predict.train(object = model_nn, exchangeTestData[,1:3], type = "raw")
+
+errorOnNNScaled <- sqrt(mean((predictions - exchangeRateTest[1:66])^2))
 
 ### For 6 days
 
@@ -257,11 +279,12 @@ colnames(sixDsExchangeTestData) <- c("FirstInput", "SecondInput", "ThirdInput", 
 sixDsExchangeResults <- compute(sixDsExchangeNeuralNet, as.data.frame(sixDsExchangeTestData))
 beep("coin")
 
-sixDsCleanOutput <- cbind(as.data.frame(exchangeRateTest[2:65]), as.data.frame(sixDsExchangeResults$net.result), id= 1:length(sixDsFirstDayPred))
+sixDsCleanOutput <- cbind(as.data.frame(exchangeRateTest[4:67]), as.data.frame(sixDsExchangeResults$net.result), id= 1:length(sixDsFirstDayPred))
 colnames(sixDsCleanOutput) <- c("Expected Output", "Predicted Output", "ID")
 print(sixDsCleanOutput)
 
-cor(exchangeRateTest[2:65], sixDsExchangeResults$net.result)
+errorOnNNSixDs <- sqrt(mean((sixDsExchangeResults$net.result - exchangeRateTest[4:67])^2))
+errorOnNNSixDs
 
 plot(sixDsCleanOutput)
 sixDsMeltedOutput <- melt(sixDsCleanOutput, id = 'ID')
@@ -272,7 +295,7 @@ ggplot(data=sixDsMeltedOutput, aes(x=ID, y=value, color=variable)) +
 
 sixDsTrainOutput$`Predicted Output` <- NA
 sixDsCumulativeOutput = rbind(sixDsTrainOutput,sixDsCleanOutput)
-sixDsCumulativeOutput = cbind(sixDsCumulativeOutput, cumID = 1:383)
+sixDsCumulativeOutput = cbind(sixDsCumulativeOutput, cumID = 1:378)
 
 sixDsCumulativeOutput$ID <- NULL
 sixDsMeltedCumulativeOutput <- melt(sixDsCumulativeOutput, id = 'cumID')
@@ -281,6 +304,13 @@ ggplot(data=sixDsMeltedCumulativeOutput, aes(x=cumID, y=value, color=variable)) 
   geom_line()
 
 
+model_nnSixDs <- train(sixDsExchangeTrainingData[,1:6], sixDsExchangeTrainingData[,7], method = 'neuralnet', 
+                  preProcess = c("center", "scale"))
+
+predictionsSixDs <- predict.train(object = model_nnSixDs, sixDsExchangeTestData[,1:6], type = "raw")
+
+errorOnNNScaledSixDs <- sqrt(mean((predictionsSixDs - exchangeRateTest[4:67])^2))
+errorOnNNScaledSixDs
 ################# Objective #4  #############################
 library(e1071)
 
