@@ -317,15 +317,12 @@ library(e1071)
 exchangeTrainingData
 
 svmExTrain <- subset(exchangeTrainingData, select = -Output)
-#nrow(svmExTrain) = 317
 
 expectedOutput <- exchangeTrainingData$Output
-#length(expectedOutput) = 317
 
 exchangeSvmModel <- svm(svmExTrain,expectedOutput)
 beep("coin")
 
-#nrow(exchangeTestData) = 66 
 predictedOutput <- predict(exchangeSvmModel, exchangeTestData)
 beep("coin")
 
@@ -353,7 +350,7 @@ svmTune <- tune(svm, train.x = svmExTrain, train.y = expectedOutput, kernel= "ra
 beep("coin")
 print(svmTune)
 
-exchangeSvmModelTuned <- svm(svmExTrain,expectedOutput, gamma = 0.01, cost = 10)
+exchangeSvmModelTuned <- svm(svmExTrain,expectedOutput, gamma = 0.03, cost = 10)
 beep("coin")
 
 predictedOutputTuned <- predict(exchangeSvmModelTuned, exchangeTestData)
@@ -365,6 +362,7 @@ print(cleanOutputSvmTuned)
 
 ## Error for tuned data
 errorOnSvmTuned <- sqrt(mean((signif(predictedOutputTuned, digits = 5) - exchangeRateTest[3:68])^2))
+errorOnSvmTuned
 
 meltedOutputSvmTuned <- melt(cleanOutputSvmTuned, id = 'ID')
 
