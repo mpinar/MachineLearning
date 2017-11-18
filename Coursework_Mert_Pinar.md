@@ -54,7 +54,7 @@ idealNumberOfClusters <- function(scaledData){
   return(clusterSuggestion)
 } #Returns: clusterSuggestion
 ```
-After I ran this, I've got and output as below;
+After running the code, the output is given as:
 
 >*** : The Hubert index is a graphical method of determining the number of clusters.
                 In the plot of Hubert index, we seek a significant knee that corresponds to a significant increase of the value of the measure i.e the significant peak in Hubert index second differences plot. 
@@ -78,7 +78,7 @@ After I ran this, I've got and output as below;
 *******************************************************************
 ![suggestion](https://github.com/mpinar/MachineLearning/blob/master/clusterSuggestion.png?raw=true)
 
-I have put the information in a bar plot to see the best numbers of clusters.
+The information is used to create a bar plot to get the best numbers of clusters as given in the below.
 
 ```r
 barplot(table(clusterSuggestion$Best.nc[1,]), ylab = "Number of Criteria",
@@ -88,7 +88,7 @@ barplot(table(clusterSuggestion$Best.nc[1,]), ylab = "Number of Criteria",
 ![bar](https://github.com/mpinar/MachineLearning/blob/master/bar%20and%20cluster.png?raw=true)
 
 
-After determining the best number of clusters, it is time to take its k-mean, and see how well it did. I've put it in to a function that we can test it and see the changes dynamically. I didn't delete the outliers because it is normal to delete them if it is obvious that the outlier is due to incorrectly entered or measured data
+After determining the best number of clusters, the k-mean values are determined to observe how well the program did. The function is written that we can test the values and at the same time detect the changes dynamically. In this case the outliers were not eliminated because they should not considered if it is certain that the information is misinterpreted, completely wrong or misleading the other data analysis.
 ```r
 howManyClustersYouNeed <- function(scaledData,numberOfCluster){
   clustersWanted <- kmeans(scaledData,numberOfCluster)
@@ -97,13 +97,13 @@ howManyClustersYouNeed <- function(scaledData,numberOfCluster){
 } #Returns: Output of kmeans
 ```
 ![clusters](https://github.com/mpinar/MachineLearning/blob/master/clusterPlot.png?raw=true)
-To see how parallel our output to white wine dataset's quality column, I have used `parcoord` function from the library `MASS`, code and the output can be seen below;
+To see how parallel our output to white wine dataset's quality column, the  `parcoord` function is used from the library `MASS`, code and the output can be seen below;
 ```r
 parcoord(scaledData, clustersWanted$cluster)
 ```
 ![parcoord](https://github.com/mpinar/MachineLearning/blob/master/parcoord.png?raw=true)
 
-After the calculations, we need to check how correct the computer did the classification. For that I have formed a confuse table to check the consistency of my results.
+After the calculations, the reliability of the program is tested on classification. For this end, the confuse table is formed to check the consistency of the results.
 ```r
 validation <- function(data,kmeansOutput){
   confuseTable <- table(data$quality, kmeansOutput$cluster)
@@ -115,12 +115,12 @@ Output:
 > ARI 
 >0.02553198 
 
-Outcome of this experiment is, it is not possible to determine the quality of the wine by looking at its chemical components. NBClust suggests that using 2 clusters that's because the function _can not_ give any suggestion less than 2. If it can give us less of a suggestion it would tell us to use 0 clusters. As a result of the test we can see there is really small correlation between what our algorithm and output of the test those people made to taste the wine. On the other hand, I think that would be more accurate if we were comparing the main grape that made that wine, because chemistry will be effective on that concept.
+Based on the outcome of this experiment, it is not possible to determine the quality of the wine by considering its chemical components. NBClust suggests the using of 2 clusters that's because the function _can not_ give any suggestion less than 2. If it would give a smaller value of a suggestio, it will be use of 0 clusters. As a result of the test, we can observe that there is a limited correlation between the obtained algorithm and the output of the test, those people made on taste the wine. On the other hand, it can be suggested that the accuracy will be improved if we were comparing the main grape that the wine made of, because chemistry will be effective on that concept.
 #####  Objective #2 (Hierarchical Clustering)
 
-In this part, we are still working on white wine dataset, but, this time we will be using agglomerative clustering technique to get our classification done.
+In this part, even though the considered data set remain the same, white wine dataset, the used clustering technique to get our classification have done is changed to agglomerative clustering.
 
-To begin with, I have formatted the white wine dataset as deleting its quality column again, because this experiment contains unsupervised learning. I also took the distance of each element using `dist` function from the `stats` library, and I need to import the relevant libraries for hierarchical clustering.
+To begin with, the white wine dataset have formatted by deleting its quality column again, because this experiment contains unsupervised learning. Moreover, the distance of each element is determined by using `dist` function from the `stats` library, and then the relevant libraries are imported for hierarchical clustering.
 ```r
 library(dendextend)
 library(corrplot)
@@ -131,7 +131,7 @@ testWhiteWineData$quality <- NULL
 distWhiteWine <- dist(testWhiteWineData)
 ```
 
-I have used three different hierarchical clustering methods, those are; Single Linkage, Complete Linkage, Average Linkage. As my NBClust suggest me that there should be 5 clusters I have cut the trees into 5. For further information, I have used `beep` function from `beepr` library for notifications. Since some of these functions taking some time running, I have set the beep to warn me when the functions are done working.
+For this purpose, three different hierarchical clustering methods are used which are; Single Linkage, Complete Linkage and Average Linkage. Based on the suggestion of NBClust, there should be 5 clusters which the trees set on 5 clusters. For further information, `beep` function from `beepr` library for notifications is used. Since some of these functions is taking certain time for running, the beep is set for warning when the functions are done working.
 ```r
 singleLinkage <- hclust(distWhiteWine, method = "single")
 singleGroup <- cutree(singleLinkage, k=5)
@@ -159,7 +159,7 @@ plot(averageLinkage)
 ![average](https://github.com/mpinar/MachineLearning/blob/master/average%20linkage%20plot.png?raw=true)
 
 
-After I am done with creating the dendrograms, I need to check their cophenetic correlation for that I need to form a dendrogram list using those three that I have formed before. Then I used this list to calculate the cophenetic correlation between the dendrograms. I have also drawn the correlation graph. Since a part of the experiment, I have wanted to keep the time it take to run the function to find the correlation.
+After creating the dendrograms, their cophenetic correlation should be checked which then followed by the formation of a dendrogram list from those. Then this list is used to calculate the cophenetic correlation between the dendrograms. The correlation graph is also plotted. Since as a part of the experiment, the time for the function to run and find the correlation have recorded.
 ```r
 wineDendList <- dendlist(as.dendrogram(singleLinkage), 
             as.dendrogram(completeLinkage), as.dendrogram(averageLinkage))
@@ -186,7 +186,7 @@ Output:
 
 ![corr](https://github.com/mpinar/MachineLearning/blob/master/corrplot.png?raw=true)
 
-From these plots we can observe that these three dendrograms are not quite correlated. That's because of the approaches that three techniques have on the terms of clustering. Single Linkage finds the smallest distance for each data point and keep them in a next-best-merge array, where complete linkage computes the n^2 distance metric and then sort the distances for each data point and average linkage merges in each iteration the pair of clusters with the highest cohesion.
+It can be seen from these plots that these three dendrograms are not significantly correlated due to the different approaches of these three clustering techniques that applied. Single Linkage finds the smallest distance for each data point and keep them in a next-best-merge array, while the complete linkage computes the n^2 distance in metric and then sort the distances for each data point and lastly, average linkage merges clusters in each iteration with the highest cohesion.
 
 ### Forecasting Part
 
