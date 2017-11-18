@@ -1,6 +1,6 @@
 # Coursework #1
 
-This coursework contains four key components, those are;
+This coursework contains four key components, which are;
 
   - Partitioning clusters with White Wine Data
   - Hierarchical clustering with White Wine Data
@@ -8,9 +8,9 @@ This coursework contains four key components, those are;
   - Forecasting using SVRs
 
 ### Clustering Part
-In clustering part we have observed two different techniques on clustering those are partitioning and agglomerative. We consider a set of observations on a number of white wine varieties involving their chemical properties and ranking by tasters. Although, it varies from person to person but we are experimenting if a machine can taste a wine by checking its chemical compounds. All chemical variables are contionuos and the quality factor is within 1 (one) to 10 (ten). 
+For this part, two different techniques on clustering are considered which are partitioning and agglomerative. A set of observations on the number of white wine varieties involving their chemical properties and ranking by tasters are considered. However, the taste is a subjective property which varies from person to person, the program tests whether the machine can define a specific taste cluster for a wine by considering its chemical compounds. All chemical variables are contionuos and the quality factor is desined within 1 (one) to 10 (ten). 
 
-Chemical variables are stated below:
+Chemical variables are stated below as:
 >Fixed Acidity
 >Volatile Acidity
 >Citric Acid
@@ -23,13 +23,13 @@ Chemical variables are stated below:
 >Alcohol
 >Output Variable
 
-We will use first eleven attributes to form clusters, and we will use Output variable to test how well our computer did the comparison. After this we will figure out if we can trust our computer's taste buds on the concept of wine.
+The first eleven attributes are used to form clusters, and output variable used to examine how well the computer made the comparison. The following step will be testing the reliability on the computer's taste buds on the concept of wine.
 
 #####  Objective #1 (Partitioning Clustering)
 
-We have conducted the k-means clustering analysis for this part. 
+The k-means clustering analysis have conducted for this part of the study. 
 
-To begin we have imported our relative libraries and the white wine dataset
+First, the relative libraries and the white wine dataset have imported as shown in the below.
 ```r
 library(readxl)
 library(fpc)
@@ -38,7 +38,7 @@ library(flexclust)
 library(beepr)
 whiteWineData <- read_excel("~/Desktop/Courses/Data Mining and Machine Learning/CW1/Whitewine.xlsx")
 ```
-After that we need to scale our data, to get more accurate clustering in our coursework. In this case what scaling do is normalize the data according to their representative mean. I have written a function that scales the data and takes gets the subset of the white wine data according to Quality column. I've got the quality column out of the main dataset because it will be my point to compare how the computer did clustering, and how accurate it is on determining the quality.
+Then, to get more accurate clustering profiles, the data was scaled. In this case, scaling is normalizing the data according to their representative mean. The function that scales the data and takes the subset of the white wine data according to Quality column have written, then the quality column excluded from the main dataset due to comparison of how the computer generates clustering, and how accurate it is on determining the quality. The function given as the following:
 ```r
 scaleWineData <- function(data){
   data2 <- data
@@ -47,7 +47,7 @@ scaleWineData <- function(data){
   return(scaledData)
 } #Returns: Scaled Data
 ```
-Then I have used the `NBClust` function to determine the ideal number of clusters according to various clustering methods. In this experiment we have used K-means, so I've written a function as below;
+Then `NBClust` function have used to determine the ideal number of clusters according to various clustering methods. For this purpose K-means are used, hence the function as stated in the below;
 ```r
 idealNumberOfClusters <- function(scaledData){
   clusterSuggestion <- NbClust(scaledData, min.nc = 2, max.nc = 10, method = "kmeans")
