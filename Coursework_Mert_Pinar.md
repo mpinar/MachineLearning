@@ -383,14 +383,14 @@ From this experiment it can be seen that Neural net gives almost the same answer
 
 #### Objective #4 (Forecasting using SVR)
 
-In this part the SVM Model is used for forecasting problem. When the experiment is completed the results with ones we got from Neural Net. I will use the exact same dataset that I used for Neural Net for the sake of the experiments validity. I am going to test the SVM models for three and six inputs. To begin with, I subsetted the Exchange Training data by extracting the output, I need that dataset to form my formula for the SVM Model.
+In this part the SVM Model is used for forecasting problem. When the experiment is completed the results will be compared with the ones obtained from Neural Net. The exact same dataset is used which previously used for Neural Net for the safety and improvement of the experiment validity. The SVM models will be tested for three and six inputs. To begin with, the Exchange Training data is subsetted by extracting the output, which is required for that dataset to form the formula that is going to be used for the SVM Model.
 ```r
 library(e1071)
 
 svmExTrain <- subset(exchangeTrainingData, select = -Output)
 expectedOutput <- exchangeTrainingData$Output
 ```
-By following this I have got two datasets those will form my formula. With that information SVM model formed and with given test data the test had been conducted.
+By following this, tho datasets are obtained based on the application of created formula. With that information SVM model is formed and with given test data the test has been conducted.
 ```r
 exchangeSvmModel <- svm(svmExTrain,expectedOutput)
 beep("coin")
@@ -417,7 +417,7 @@ svm.default(x = svmExTrain, y = expectedOutput)
 
 >Number of Support Vectors:  240
 
-About the testing, I have done the same steps to the graph, that was I have added an ID column to melt the data on. The results were checked according to MAPE error calculation and model did a tramendous job according to Neural Net. So the code and  graphs for both prediction and cumulative below;
+About the testing, the same steps to the graph is achieved, that was the addition of an ID column to melt the data on. The results are checked according to MAPE error calculation and model work in an exceptional way according to Neural Net. Moreover, the code and graphs for both prediction and cumulative are given in the below;
 ```r
 errorOnSvm <- sqrt(mean((signif(predictedOutput, digits = 5) - exchangeRateTest[3:68])^2))
 ### Error calculation
@@ -433,7 +433,7 @@ ggplot(data=meltedOutputSvm, aes(x=ID, y=value, color=variable)) +
 
 ![threeInputs](https://github.com/mpinar/MachineLearning/blob/master/SVM%203%20inputs%20graph.png?raw=true)
 
-Following that changes after tunening the SVM model observed. `tune` function had been used. Aim of this part was whether output will have less error or not. 
+Following that part, the changes after tunening the SVM model are observed. The `tune` function had been used for this end. The main purpose of this part is to determine whether output will have less error or not compare to previous models. 
 ```r
 svmTune <- tune(svm, train.x = svmExTrain, train.y = expectedOutput, kernel= "radial",
                 ranges = list(cost= 10^(-1:2), gamma= seq(0,1, by= 0.01)))
@@ -448,7 +448,7 @@ print(svmTune)
   | 10 | 0.03 |
 > best performance: 0.00006320184555 
 
-SVM model tuned according to the information above, and test ran with the exact same procedure before. MAPE error calculation had been applied to the output;
+SVM model is tuned according to the information above, and test run with the exact same procedure that applied before. MAPE error calculation has applied to the output;
 ```r
 exchangeSvmModelTuned <- svm(svmExTrain,expectedOutput, gamma = 0.03, cost = 10)
 beep("coin")
@@ -474,7 +474,7 @@ Error output is;
 
 ![threeTuned](https://github.com/mpinar/MachineLearning/blob/master/SVM%203%20inputs%20tuned%20graph.png?raw=true)
 
-After tests with three inputs are done, tests with six inputs will be applied. Same input matrix as used in Neural net, will be used. Same procedure will be followed.
+After tests with three inputs are done, tests with six inputs will be applied. Same input matrix as used in Neural net will be used and the same procedure will be followed.
 ```r
 sixDsSvmExTrain <- subset(sixDsExchangeTrainingData, select = -Output)
 sixDsExpectedOutput <- sixDsExchangeTrainingData$Output
@@ -519,7 +519,7 @@ ggplot(data=sixDsMeltedOutputSvm, aes(x=ID, y=value, color=variable)) +
 
 ![sixInputs](https://github.com/mpinar/MachineLearning/blob/master/SVM%206%20input%20graph.png?raw=true)
 
-We will observe how the predictions change after we tune the SVM;
+The changes in the  predictions after the tuning of the SVM is observed as the following;
 ```r
 sixDsSvmTune <- tune(svm, train.x = sixDsSvmExTrain, train.y = sixDsExpectedOutput, kernel= "radial",
                 ranges = list(cost= 10^(-1:2), gamma= seq(0,1, by= 0.01)))
@@ -534,7 +534,7 @@ sixDsSvmTune <- tune(svm, train.x = sixDsSvmExTrain, train.y = sixDsExpectedOutp
 > best performance: 0.00006409881733 
 
 
-After tuning the SVM according to the attributes above, I have ran the test all over again with the same processes as in three input tests.
+After tuning the SVM according to the attributes above, the test is run all over again with the same processes as in three input tests.
 ```r
 sixDsExchangeSvmModelTuned <- svm(sixDsSvmExTrain,sixDsExpectedOutput, gamma = 0.01, cost = 10)
 beep("coin")
