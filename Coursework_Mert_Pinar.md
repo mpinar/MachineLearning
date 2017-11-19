@@ -324,7 +324,7 @@ errorOnNNScaled <- sqrt(mean((predictions - exchangeRateTest[1:66])^2))
 ```
 > errorOnNNScaled -> 0.005775149777
 
-Since I have tested my MLP's performance with three inputs, I had to test it again with different input scheme. I chose to have six inputs. I have applied the same steps for six inputs;
+Since the MLP's performance is tested with three inputs, it is needed to be examine one more time with different input scheme. For this purpose, six inputs are chosen for application of same test steps as the following;
 ```r
 sixDsExchangeNeuralNet <- neuralnet(Output~FirstInput + SecondInput + ThirdInput + FourthInput + FifthInput + SixthInput, sixDsExchangeTrainingData, hidden = 2)
 
@@ -333,7 +333,7 @@ colnames(sixDsTrainOutput) <- c("Expected Output", "Predicted Output", "ID")
 ```
 ![nn6](https://github.com/mpinar/MachineLearning/blob/master/NN%206%20input.png?raw=true)
 
-When we run the `compute` function we have got a prediction in our hands. I ran MAPE on the result and I almost have the same result as I get from three day input. You can inspect the code below, I am pasting the results right after the code.
+When the `compute` function is run, the result will be a prediction which running MAPE on the result give the same outputs as previously obtained from three day input. The code that gives the results and the obtained plots are given in the below.
 ```r
 sixDsCleanOutput <- cbind(as.data.frame(exchangeRateTest[4:67]), as.data.frame(sixDsExchangeResults$net.result), id= 1:length(sixDsFirstDayPred))
 colnames(sixDsCleanOutput) <- c("Expected Output", "Predicted Output", "ID")
@@ -362,7 +362,7 @@ ggplot(data=sixDsMeltedCumulativeOutput, aes(x=cumID, y=value, color=variable)) 
 
 ![nn6InputsCumu](https://github.com/mpinar/MachineLearning/blob/master/NN%206%20Input%20cumulative.png?raw=true)
 
-I wanted to test my Neural Net with six scaled inputs. I got the results same as I got from three scaled inputs, the results were worse.
+The six scaled inputs are also tested with Neural Net by applying the same strategy on the previous three input study. The obtained results are worse when compared to previous data.
 ```r
 model_nnSixDs <- train(sixDsExchangeTrainingData[,1:6], sixDsExchangeTrainingData[,7], method = 'neuralnet', 
                   preProcess = c("center", "scale"))
@@ -374,7 +374,7 @@ errorOnNNScaledSixDs
 ```
 > errorOnNNScaledSixDs -> 0.006306423344
 
-From this experiment we can see that Neural net gave almost the same answer with non-scaled three and six inputs. What we can clearly observe that it performs poorly with the scaled data. I have formed the table below, you can see the results below;
+From this experiment it can be seen that Neural net gives almost the same answer with non-scaled three and six inputs datasets, however the scaled data always give poorer results which is shown in the formed table below.
 
 | Error Table    |    Three Inputs | Six Inputs  |
 | :--------: | :--------:| :---------: |
@@ -383,7 +383,7 @@ From this experiment we can see that Neural net gave almost the same answer with
 
 #### Objective #4 (Forecasting using SVR)
 
-In this part we are going to use SVM Model for this forecasting problem. After the experiment is done we will have the chance to compare the results with ones we got from Neural Net. I will use the exact same dataset that I used for Neural Net for the sake of the experiments validity. I am going to test the SVM models for three and six inputs. To begin with, I subsetted the Exchange Training data by extracting the output, I need that dataset to form my formula for the SVM Model.
+In this part the SVM Model is used for forecasting problem. When the experiment is completed the results with ones we got from Neural Net. I will use the exact same dataset that I used for Neural Net for the sake of the experiments validity. I am going to test the SVM models for three and six inputs. To begin with, I subsetted the Exchange Training data by extracting the output, I need that dataset to form my formula for the SVM Model.
 ```r
 library(e1071)
 
