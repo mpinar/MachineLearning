@@ -190,7 +190,7 @@ It can be seen from these plots that these three dendrograms are not significant
 
 ### Forecasting Part
 
-In forecasting part we used two different approaches on regression. Those are MLP (Neural Net) and SVM. In this part we are given a dataset that contains USD/EUR exchange rates that contains 390 data points. We are asked to use first 320 data point to train our machnines and 70 data points to test how well it was trained. In this time series analysis I modified my training dataset using the exact same data as in Exchange Rate dataset. We are using `neuralnet` library for MLP and `e1071` library for SVM I formed a new matrix as shown below;
+ın forecasting part, two different approaches on regression are used, which are MLP (Neural Net) and SVM. For this end, a dataset contains USD/EUR exchange rates that contains 390 data points are given. It is asked to use of first 320 data point to train our machnines and 70 data points to test how well it was trained. In this time series analysis, it is modified by prepared training dataset using the exact same data as in Exchange Rate dataset. The `neuralnet` library for MLP and `e1071` library for SVM are used to form a new matrix as shown below;
 
 | First Day      |    Second Day | Third Day  | Prediction Day |
 | :--------: | :--------:| :---------: | :---------:|
@@ -198,7 +198,7 @@ In forecasting part we used two different approaches on regression. Those are ML
 | i+1  | i+2 | i+3 | i+4 |
 | i+2 | i+3 |  i+4 | i+5 |
 
-According to this dataset machine will take first three columns as input and fourth column which as Prediction Day as supervision, since we are using supervised machine learning. For experimenting purposes I have formed another matrix that is for six days as input. R code about those are below;
+According to this dataset, machine will take first three columns as input and the fourth column, which is Prediction Day as supervision, since supervised machine learning is used. For experimenting purposes, another matrix that contains for six days as input is formed. R code about those are below;
 ```r
 library(neuralnet)
 library(NeuralNetTools)
@@ -259,7 +259,7 @@ colnames(sixDsExchangeTrainingData) <- c("FirstInput", "SecondInput", "ThirdInpu
 
 #### Objective #3 (Forecasting using MLP)
 
-After we got our dataset completed, we need to train our machine. In this part of experiment we are going to use Neural Net (MLP). Since we have two different datasets to train our machine we will observe that if more inputs are better or more inputs makes our machine to lean to make more mistake on regression. For three inputs our formula will be `Output~FirstInput+SecondInput+ThirdInput`. 
+After the complete dataset obtained with all the prospects, the machine should be trained. In this part of the experiment, Neural Net (MLP) is used. Since there are two different datasets to train the machine, it can be observed whether more inputs are better or more inputs makes our machine to lean to generate more mistake on regression. For three inputs the formula will be `Output~FirstInput+SecondInput+ThirdInput`. 
 ```r
 exchangeNeuralNet <- neuralnet(Output~FirstInput + SecondInput + ThirdInput, exchangeTrainingData, hidden = 2)
 
@@ -269,7 +269,7 @@ colnames(trainOutput) <- c("Expected Output", "Predicted Output", "ID")
 ![NN3Inputs](https://github.com/mpinar/MachineLearning/blob/master/3%20input%20neural%20net.png?raw=true)
 
 
-After training I have formed another matrix from the test part of the Exchange Dataset. What differs from the training matrix is the prediction column. 
+After training another matrix is formed to test the part of the Exchange Dataset. The difference from the training matrix is the prediction column. 
 
 | First Day      |    Second Day | Third Day  |
 | :--------: | :--------:| :---------: |
@@ -277,7 +277,7 @@ After training I have formed another matrix from the test part of the Exchange D
 | i+1  | i+2 | i+3 |
 | i+2 | i+3 |  i+4 |
 
-With the dataset above I have used `compute` function to make machine to forecast according to the related data, then form a matrix that has the predicted outputs and expected outputs. I have added an ID column to visualize the data more properly. I have melted all the data on ID column, so that I can get a better graph. I have used `melt` function from `reshape2` library for this operation.
+By using the dataset above the `compute` function is applied to make machine to forecast according to the related data, then form a matrix that has the predicted outputs and expected outputs. An ID column to is added visualize the data more properly. All the data on ID column are melted, so that a better graph is obtained. The `melt` function is used from `reshape2` library for this operation.
 
 ```r
 exchangeResults <- compute(exchangeNeuralNet, as.data.frame(exchangeTestData))
@@ -292,7 +292,7 @@ ggplot(data=meltedOutput, aes(x=ID, y=value, color=variable)) +
 ```
 ![threeInputs](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20graph.png?raw=true)
 
-When I run MAPE error test on my prediction, I got a small number of error. To visualize the trend I pasted my prediction to the whole graph that is shown below;
+When the MAPE error test is run on the data of prediction, the calculated error value can be neglected easily, significantly small number. To visualize the trend of the prediction data with the whole graph, both values plotted on the same graph combinationally as shown below;
 ```r
 errorOnNN <- sqrt(mean((exchangeResults$net.result - exchangeRateTest[1:66])^2))
 
@@ -311,7 +311,7 @@ Output:
 >errorOnNN -> 0.003284871809
 ![3InputCumu](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20cumulative.png?raw=true)
 
-I have tested Neuralnet with a scaled data. I have used `caret` library for this operation. After I did the experiment with the scaled data I have put the output to MAPE error test, what I observed it's performance with scaled data was poor.
+The scaled data was tested with Neuralnet by using `caret` library for this operation. After this, the experiment with the scaled data is achieved by putting the output to MAPE error test, which it's performance with scaled data is observed as poor.
 ```r
 library(caret)
 
