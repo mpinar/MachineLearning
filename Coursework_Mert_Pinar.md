@@ -292,7 +292,7 @@ ggplot(data=meltedOutput, aes(x=ID, y=value, color=variable)) +
 ```
 ![threeInputs](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20graph.png?raw=true)
 
-When the MAPE error test is run on the data of prediction, the calculated error value can be neglected easily, significantly small number. To visualize the trend of the prediction data with the whole graph, both values plotted on the same graph combinationally as shown below;
+When the RMSE error test is run on the data of prediction, the calculated error value can be neglected easily, significantly small number. To visualize the trend of the prediction data with the whole graph, both values plotted on the same graph combinationally as shown below;
 ```r
 errorOnNN <- sqrt(mean((exchangeResults$net.result - exchangeRateTest[1:66])^2))
 
@@ -311,7 +311,7 @@ Output:
 >errorOnNN -> 0.003284871809
 ![3InputCumu](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20cumulative.png?raw=true)
 
-The scaled data was tested with Neuralnet by using `caret` library for this operation. After this, the experiment with the scaled data is achieved by putting the output to MAPE error test, which it's performance with scaled data is observed as poor.
+The scaled data was tested with Neuralnet by using `caret` library for this operation. After this, the experiment with the scaled data is achieved by putting the output to RMSE error test, which it's performance with scaled data is observed as poor.
 ```r
 library(caret)
 
@@ -333,7 +333,7 @@ colnames(sixDsTrainOutput) <- c("Expected Output", "Predicted Output", "ID")
 ```
 ![nn6](https://github.com/mpinar/MachineLearning/blob/master/NN%206%20input.png?raw=true)
 
-When the `compute` function is run, the result will be a prediction which running MAPE on the result give the same outputs as previously obtained from three day input. The code that gives the results and the obtained plots are given in the below.
+When the `compute` function is run, the result will be a prediction which running RMSE on the result give the same outputs as previously obtained from three day input. The code that gives the results and the obtained plots are given in the below.
 ```r
 sixDsCleanOutput <- cbind(as.data.frame(exchangeRateTest[4:67]), as.data.frame(sixDsExchangeResults$net.result), id= 1:length(sixDsFirstDayPred))
 colnames(sixDsCleanOutput) <- c("Expected Output", "Predicted Output", "ID")
@@ -417,7 +417,7 @@ svm.default(x = svmExTrain, y = expectedOutput)
 
 >Number of Support Vectors:  240
 
-About the testing, the same steps to the graph is achieved, that was the addition of an ID column to melt the data on. The results are checked according to MAPE error calculation and model work in an exceptional way according to Neural Net. Moreover, the code and graphs for both prediction and cumulative are given in the below;
+About the testing, the same steps to the graph is achieved, that was the addition of an ID column to melt the data on. The results are checked according to RMSE error calculation and model work in an exceptional way according to Neural Net. Moreover, the code and graphs for both prediction and cumulative are given in the below;
 ```r
 errorOnSvm <- sqrt(mean((signif(predictedOutput, digits = 5) - exchangeRateTest[3:68])^2))
 ### Error calculation
@@ -448,7 +448,7 @@ print(svmTune)
   | 10 | 0.03 |
 > best performance: 0.00006320184555 
 
-SVM model is tuned according to the information above, and test run with the exact same procedure that applied before. MAPE error calculation has applied to the output;
+SVM model is tuned according to the information above, and test run with the exact same procedure that applied before. RMSE error calculation has applied to the output;
 ```r
 exchangeSvmModelTuned <- svm(svmExTrain,expectedOutput, gamma = 0.03, cost = 10)
 beep("coin")
@@ -506,7 +506,7 @@ colnames(sixDsCleanOutputSvm) <- c("Expected Output", "Predicted Output", "ID")
     
 >Number of Support Vectors:  240
 
-For ploting the output and calculating the error using MAPE;
+For ploting the output and calculating the error using RMSE;
 ```r
 errorOnSvmSixD <- sqrt(mean((signif(sixDsPredictedOutput, digits = 5) - exchangeRateTest[6:69])^2))
 
