@@ -1,5 +1,7 @@
 # Coursework #1
+#### Mert PINAR - 164210441
 
+Code related to this course work can be found in [Github](https://raw.githubusercontent.com/mpinar/MachineLearning/master/CW1.R)
 This coursework contains four key components, which are;
 
   - Partitioning clusters with White Wine Data
