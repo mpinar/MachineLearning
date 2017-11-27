@@ -89,9 +89,16 @@ ggplot(meltedA, aes(x=Molar, y=value, colour = variable)) +
   geom_text(aes(1*10^-9, 0.574 ,label = "0.574", vjust= -1))
 
 svmModel <- svm(dfA$R1, dfA$Molar)
+svmModel1 <- svm(dfA$R2, dfA$Molar)
+svmModel2 <- svm(dfA$R3, dfA$Molar)
+svmModel3 <- svm(dfA$R4, dfA$Molar)
+svmModel4 <- svm(dfA$R5, dfA$Molar)
 numberA = 0.574
-predictionA <- predict(svmModel, numberA) ## 6.2497x 10^-9
-
+predictionA <- predict(svmModel, numberA) ## 6.249x 10^-9
+predictionA1 <- predict(svmModel1, numberA) ## 7.835x10^-9
+predictionA2 <- predict(svmModel2, numberA) ## 1.586x10^-8
+predictionA3 <- predict(svmModel3, numberA) ## 4.305x10^-8
+predictionA4 <- predict(svmModel4, numberA) ## 1.429x10^-7
 
 
 ####### Drug C ###############
@@ -161,8 +168,18 @@ ggplot(meltedC, aes(x=Molar, y=value, colour = variable)) +
   geom_text(aes(1*10^-9, numberC ,label = numberC, vjust= -1))
 
 svmModelC <- svm(dfC$CR1, dfC$Molar)
+svmModelC1 <- svm(dfC$CR2, dfC$Molar)
+svmModelC2 <- svm(dfC$CR3, dfC$Molar)
+svmModelC3 <- svm(dfC$CR4, dfC$Molar)
+svmModelC4 <- svm(dfC$CR5, dfC$Molar)
+svmModelC5 <- svm(dfC$CR6, dfC$Molar)
 numberC = 0.883
-predictionC <- predict(svmModelC, numberC) ## 1.0413x 10^-8
+predictionC <- predict(svmModelC, numberC) ## 1.041 x10^-8
+predictionC1 <- predict(svmModelC1, numberC) ## 1.404 x10^-8
+predictionC2 <- predict(svmModelC2, numberC) ## 1.385 x10^-8
+predictionC3 <- predict(svmModelC3, numberC) ## 1.679 x10^-8
+predictionC4 <- predict(svmModelC4, numberC) ## 9.539 x10^-9
+predictionC5 <- predict(svmModelC5, numberC) ## 1.424 x10^-8
 
 
 ###### Drug E ##########
@@ -251,9 +268,16 @@ ggplot(meltedE, aes(x=MolarE, y=value, colour = variable)) +
   geom_text(aes(1*10^-9, numberE ,label = numberE, vjust= -1))
 
 svmModelE <- svm(dfE$CE1, dfE$MolarE)
+svmModelE1 <- svm(dfE$CE2, dfE$MolarE)
+svmModelE2 <- svm(dfE$CE3, dfE$MolarE)
+svmModelE3 <- svm(dfE$CE4, dfE$MolarE)
+svmModelE4 <- svm(dfE$CE5, dfE$MolarE)
 numberE = 0.589
-predictionC <- predict(svmModelE, numberE) ## 3.0866x 10^-8
-
+predictionC <- predict(svmModelE, numberE) ## 3.087x 10^-8
+predictionC1 <- predict(svmModelE1, numberE) ## 1.716 x10^-8
+predictionC2 <- predict(svmModelE2, numberE) ## 2.325 x10^-8
+predictionC3 <- predict(svmModelE3, numberE) ## 5.583 x10^-8
+predictionC4 <- predict(svmModelE4, numberE) ## 8.828 x10^-7
 
 n <- 100
 x <- seq(n)
