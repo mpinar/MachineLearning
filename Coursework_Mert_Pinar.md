@@ -1,6 +1,8 @@
 # Coursework #1
+#### Mert PINAR - 164210441
 
-This coursework contains four key components, those are;
+Code related to this course work can be found in [Github](https://raw.githubusercontent.com/mpinar/MachineLearning/master/CW1.R)
+This coursework contains four key components, which are;
 
   - Partitioning clusters with White Wine Data
   - Hierarchical clustering with White Wine Data
@@ -8,9 +10,9 @@ This coursework contains four key components, those are;
   - Forecasting using SVRs
 
 ### Clustering Part
-In clustering part we have observed two different techniques on clustering those are partitioning and agglomerative. We consider a set of observations on a number of white wine varieties involving their chemical properties and ranking by tasters. Although, it varies from person to person but we are experimenting if a machine can taste a wine by checking its chemical compounds. All chemical variables are contionuos and the quality factor is within 1 (one) to 10 (ten). 
+For this part, two different techniques on clustering are considered which are partitioning and agglomerative. A set of observations on the number of white wine varieties involving their chemical properties and ranking by tasters are considered. However, the taste is a subjective property which varies from person to person, the program tests whether the machine can define a specific taste cluster for a wine by considering its chemical compounds. All chemical variables are contionuos and the quality factor is desined within 1 (one) to 10 (ten). 
 
-Chemical variables are stated below:
+Chemical variables are stated below as:
 >Fixed Acidity
 >Volatile Acidity
 >Citric Acid
@@ -23,13 +25,13 @@ Chemical variables are stated below:
 >Alcohol
 >Output Variable
 
-We will use first eleven attributes to form clusters, and we will use Output variable to test how well our computer did the comparison. After this we will figure out if we can trust our computer's taste buds on the concept of wine.
+The first eleven attributes are used to form clusters, and output variable used to examine how well the computer made the comparison. The following step will be testing the reliability on the computer's taste buds on the concept of wine.
 
 #####  Objective #1 (Partitioning Clustering)
 
-We have conducted the k-means clustering analysis for this part. 
+The k-means clustering analysis have conducted for this part of the study. 
 
-To begin we have imported our relative libraries and the white wine dataset
+First, the relative libraries and the white wine dataset have imported as shown in the below.
 ```r
 library(readxl)
 library(fpc)
@@ -38,7 +40,7 @@ library(flexclust)
 library(beepr)
 whiteWineData <- read_excel("~/Desktop/Courses/Data Mining and Machine Learning/CW1/Whitewine.xlsx")
 ```
-After that we need to scale our data, to get more accurate clustering in our coursework. In this case what scaling do is normalize the data according to their representative mean. I have written a function that scales the data and takes gets the subset of the white wine data according to Quality column. I've got the quality column out of the main dataset because it will be my point to compare how the computer did clustering, and how accurate it is on determining the quality.
+Then, to get more accurate clustering profiles, the data was scaled. In this case, scaling is normalizing the data according to their representative mean. The function that scales the data and takes the subset of the white wine data according to Quality column have written, then the quality column excluded from the main dataset due to comparison of how the computer generates clustering, and how accurate it is on determining the quality. The function given as the following:
 ```r
 scaleWineData <- function(data){
   data2 <- data
@@ -47,14 +49,14 @@ scaleWineData <- function(data){
   return(scaledData)
 } #Returns: Scaled Data
 ```
-Then I have used the `NBClust` function to determine the ideal number of clusters according to various clustering methods. In this experiment we have used K-means, so I've written a function as below;
+Then `NBClust` function have used to determine the ideal number of clusters according to various clustering methods. For this purpose K-means are used, hence the function as stated in the below;
 ```r
 idealNumberOfClusters <- function(scaledData){
   clusterSuggestion <- NbClust(scaledData, min.nc = 2, max.nc = 10, method = "kmeans")
   return(clusterSuggestion)
 } #Returns: clusterSuggestion
 ```
-After I ran this, I've got and output as below;
+After running the code, the output is given as:
 
 >*** : The Hubert index is a graphical method of determining the number of clusters.
                 In the plot of Hubert index, we seek a significant knee that corresponds to a significant increase of the value of the measure i.e the significant peak in Hubert index second differences plot. 
@@ -78,7 +80,7 @@ After I ran this, I've got and output as below;
 *******************************************************************
 ![suggestion](https://github.com/mpinar/MachineLearning/blob/master/clusterSuggestion.png?raw=true)
 
-I have put the information in a bar plot to see the best numbers of clusters.
+The information is used to create a bar plot to get the best numbers of clusters as given in the below.
 
 ```r
 barplot(table(clusterSuggestion$Best.nc[1,]), ylab = "Number of Criteria",
@@ -88,7 +90,7 @@ barplot(table(clusterSuggestion$Best.nc[1,]), ylab = "Number of Criteria",
 ![bar](https://github.com/mpinar/MachineLearning/blob/master/bar%20and%20cluster.png?raw=true)
 
 
-After determining the best number of clusters, it is time to take its k-mean, and see how well it did. I've put it in to a function that we can test it and see the changes dynamically. I didn't delete the outliers because it is normal to delete them if it is obvious that the outlier is due to incorrectly entered or measured data
+After determining the best number of clusters, the k-mean values are determined to observe how well the program did. The function is written that we can test the values and at the same time detect the changes dynamically. In this case the outliers were not eliminated because they should not considered if it is certain that the information is misinterpreted, completely wrong or misleading the other data analysis.
 ```r
 howManyClustersYouNeed <- function(scaledData,numberOfCluster){
   clustersWanted <- kmeans(scaledData,numberOfCluster)
@@ -97,13 +99,13 @@ howManyClustersYouNeed <- function(scaledData,numberOfCluster){
 } #Returns: Output of kmeans
 ```
 ![clusters](https://github.com/mpinar/MachineLearning/blob/master/clusterPlot.png?raw=true)
-To see how parallel our output to white wine dataset's quality column, I have used `parcoord` function from the library `MASS`, code and the output can be seen below;
+To see how parallel our output to white wine dataset's quality column, the  `parcoord` function is used from the library `MASS`, code and the output can be seen below;
 ```r
 parcoord(scaledData, clustersWanted$cluster)
 ```
 ![parcoord](https://github.com/mpinar/MachineLearning/blob/master/parcoord.png?raw=true)
 
-After the calculations, we need to check how correct the computer did the classification. For that I have formed a confuse table to check the consistency of my results.
+After the calculations, the reliability of the program is tested on classification. For this end, the confuse table is formed to check the consistency of the results.
 ```r
 validation <- function(data,kmeansOutput){
   confuseTable <- table(data$quality, kmeansOutput$cluster)
@@ -115,12 +117,12 @@ Output:
 > ARI 
 >0.02553198 
 
-Outcome of this experiment is, it is not possible to determine the quality of the wine by looking at its chemical components. NBClust suggests that using 2 clusters that's because the function _can not_ give any suggestion less than 2. If it can give us less of a suggestion it would tell us to use 0 clusters. As a result of the test we can see there is really small correlation between what our algorithm and output of the test those people made to taste the wine. On the other hand, I think that would be more accurate if we were comparing the main grape that made that wine, because chemistry will be effective on that concept.
+Based on the outcome of this experiment, it is not possible to determine the quality of the wine by considering its chemical components. NBClust suggests the using of 2 clusters that's because the function _can not_ give any suggestion less than 2. If it would give a smaller value of a suggestio, it will be use of 0 clusters. As a result of the test, we can observe that there is a limited correlation between the obtained algorithm and the output of the test, those people made on taste the wine. On the other hand, it can be suggested that the accuracy will be improved if we were comparing the main grape that the wine made of, because chemistry will be effective on that concept.
 #####  Objective #2 (Hierarchical Clustering)
 
-In this part, we are still working on white wine dataset, but, this time we will be using agglomerative clustering technique to get our classification done.
+In this part, even though the considered data set remain the same, white wine dataset, the used clustering technique to get our classification have done is changed to agglomerative clustering.
 
-To begin with, I have formatted the white wine dataset as deleting its quality column again, because this experiment contains unsupervised learning. I also took the distance of each element using `dist` function from the `stats` library, and I need to import the relevant libraries for hierarchical clustering.
+To begin with, the white wine dataset have formatted by deleting its quality column again, because this experiment contains unsupervised learning. Moreover, the distance of each element is determined by using `dist` function from the `stats` library, and then the relevant libraries are imported for hierarchical clustering.
 ```r
 library(dendextend)
 library(corrplot)
@@ -131,7 +133,7 @@ testWhiteWineData$quality <- NULL
 distWhiteWine <- dist(testWhiteWineData)
 ```
 
-I have used three different hierarchical clustering methods, those are; Single Linkage, Complete Linkage, Average Linkage. As my NBClust suggest me that there should be 5 clusters I have cut the trees into 5. For further information, I have used `beep` function from `beepr` library for notifications. Since some of these functions taking some time running, I have set the beep to warn me when the functions are done working.
+For this purpose, three different hierarchical clustering methods are used which are; Single Linkage, Complete Linkage and Average Linkage. Based on the suggestion of NBClust, there should be 5 clusters which the trees set on 5 clusters. For further information, `beep` function from `beepr` library for notifications is used. Since some of these functions is taking certain time for running, the beep is set for warning when the functions are done working.
 ```r
 singleLinkage <- hclust(distWhiteWine, method = "single")
 singleGroup <- cutree(singleLinkage, k=5)
@@ -159,7 +161,7 @@ plot(averageLinkage)
 ![average](https://github.com/mpinar/MachineLearning/blob/master/average%20linkage%20plot.png?raw=true)
 
 
-After I am done with creating the dendrograms, I need to check their cophenetic correlation for that I need to form a dendrogram list using those three that I have formed before. Then I used this list to calculate the cophenetic correlation between the dendrograms. I have also drawn the correlation graph. Since a part of the experiment, I have wanted to keep the time it take to run the function to find the correlation.
+After creating the dendrograms, their cophenetic correlation should be checked which then followed by the formation of a dendrogram list from those. Then this list is used to calculate the cophenetic correlation between the dendrograms. The correlation graph is also plotted. Since as a part of the experiment, the time for the function to run and find the correlation have recorded.
 ```r
 wineDendList <- dendlist(as.dendrogram(singleLinkage), 
             as.dendrogram(completeLinkage), as.dendrogram(averageLinkage))
@@ -186,11 +188,11 @@ Output:
 
 ![corr](https://github.com/mpinar/MachineLearning/blob/master/corrplot.png?raw=true)
 
-From these plots we can observe that these three dendrograms are not quite correlated. That's because of the approaches that three techniques have on the terms of clustering. Single Linkage finds the smallest distance for each data point and keep them in a next-best-merge array, where complete linkage computes the n^2 distance metric and then sort the distances for each data point and average linkage merges in each iteration the pair of clusters with the highest cohesion.
+It can be seen from these plots that these three dendrograms are not significantly correlated due to the different approaches of these three clustering techniques that applied. Single Linkage finds the smallest distance for each data point and keep them in a next-best-merge array, while the complete linkage computes the n^2 distance in metric and then sort the distances for each data point and lastly, average linkage merges clusters in each iteration with the highest cohesion.
 
 ### Forecasting Part
 
-In forecasting part we used two different approaches on regression. Those are MLP (Neural Net) and SVM. In this part we are given a dataset that contains USD/EUR exchange rates that contains 390 data points. We are asked to use first 320 data point to train our machnines and 70 data points to test how well it was trained. In this time series analysis I modified my training dataset using the exact same data as in Exchange Rate dataset. We are using `neuralnet` library for MLP and `e1071` library for SVM I formed a new matrix as shown below;
+ın forecasting part, two different approaches on regression are used, which are MLP (Neural Net) and SVM. For this end, a dataset contains USD/EUR exchange rates that contains 390 data points are given. It is asked to use of first 320 data point to train our machnines and 70 data points to test how well it was trained. In this time series analysis, it is modified by prepared training dataset using the exact same data as in Exchange Rate dataset. The `neuralnet` library for MLP and `e1071` library for SVM are used to form a new matrix as shown below;
 
 | First Day      |    Second Day | Third Day  | Prediction Day |
 | :--------: | :--------:| :---------: | :---------:|
@@ -198,7 +200,7 @@ In forecasting part we used two different approaches on regression. Those are ML
 | i+1  | i+2 | i+3 | i+4 |
 | i+2 | i+3 |  i+4 | i+5 |
 
-According to this dataset machine will take first three columns as input and fourth column which as Prediction Day as supervision, since we are using supervised machine learning. For experimenting purposes I have formed another matrix that is for six days as input. R code about those are below;
+According to this dataset, machine will take first three columns as input and the fourth column, which is Prediction Day as supervision, since supervised machine learning is used. For experimenting purposes, another matrix that contains for six days as input is formed. R code about those are below;
 ```r
 library(neuralnet)
 library(NeuralNetTools)
@@ -259,7 +261,7 @@ colnames(sixDsExchangeTrainingData) <- c("FirstInput", "SecondInput", "ThirdInpu
 
 #### Objective #3 (Forecasting using MLP)
 
-After we got our dataset completed, we need to train our machine. In this part of experiment we are going to use Neural Net (MLP). Since we have two different datasets to train our machine we will observe that if more inputs are better or more inputs makes our machine to lean to make more mistake on regression. For three inputs our formula will be `Output~FirstInput+SecondInput+ThirdInput`. 
+After the complete dataset obtained with all the prospects, the machine should be trained. In this part of the experiment, Neural Net (MLP) is used. Since there are two different datasets to train the machine, it can be observed whether more inputs are better or more inputs makes our machine to lean to generate more mistake on regression. For three inputs the formula will be `Output~FirstInput+SecondInput+ThirdInput`. 
 ```r
 exchangeNeuralNet <- neuralnet(Output~FirstInput + SecondInput + ThirdInput, exchangeTrainingData, hidden = 2)
 
@@ -269,7 +271,7 @@ colnames(trainOutput) <- c("Expected Output", "Predicted Output", "ID")
 ![NN3Inputs](https://github.com/mpinar/MachineLearning/blob/master/3%20input%20neural%20net.png?raw=true)
 
 
-After training I have formed another matrix from the test part of the Exchange Dataset. What differs from the training matrix is the prediction column. 
+After training another matrix is formed to test the part of the Exchange Dataset. The difference from the training matrix is the prediction column. 
 
 | First Day      |    Second Day | Third Day  |
 | :--------: | :--------:| :---------: |
@@ -277,7 +279,7 @@ After training I have formed another matrix from the test part of the Exchange D
 | i+1  | i+2 | i+3 |
 | i+2 | i+3 |  i+4 |
 
-With the dataset above I have used `compute` function to make machine to forecast according to the related data, then form a matrix that has the predicted outputs and expected outputs. I have added an ID column to visualize the data more properly. I have melted all the data on ID column, so that I can get a better graph. I have used `melt` function from `reshape2` library for this operation.
+By using the dataset above the `compute` function is applied to make machine to forecast according to the related data, then form a matrix that has the predicted outputs and expected outputs. An ID column to is added visualize the data more properly. All the data on ID column are melted, so that a better graph is obtained. The `melt` function is used from `reshape2` library for this operation.
 
 ```r
 exchangeResults <- compute(exchangeNeuralNet, as.data.frame(exchangeTestData))
@@ -292,7 +294,7 @@ ggplot(data=meltedOutput, aes(x=ID, y=value, color=variable)) +
 ```
 ![threeInputs](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20graph.png?raw=true)
 
-When I run MAPE error test on my prediction, I got a small number of error. To visualize the trend I pasted my prediction to the whole graph that is shown below;
+When the RMSE error test is run on the data of prediction, the calculated error value can be neglected easily, significantly small number. To visualize the trend of the prediction data with the whole graph, both values plotted on the same graph combinationally as shown below;
 ```r
 errorOnNN <- sqrt(mean((exchangeResults$net.result - exchangeRateTest[1:66])^2))
 
@@ -311,7 +313,7 @@ Output:
 >errorOnNN -> 0.003284871809
 ![3InputCumu](https://github.com/mpinar/MachineLearning/blob/master/NN%203%20input%20cumulative.png?raw=true)
 
-I have tested Neuralnet with a scaled data. I have used `caret` library for this operation. After I did the experiment with the scaled data I have put the output to MAPE error test, what I observed it's performance with scaled data was poor.
+The scaled data was tested with Neuralnet by using `caret` library for this operation. After this, the experiment with the scaled data is achieved by putting the output to RMSE error test, which it's performance with scaled data is observed as poor.
 ```r
 library(caret)
 
@@ -324,7 +326,7 @@ errorOnNNScaled <- sqrt(mean((predictions - exchangeRateTest[1:66])^2))
 ```
 > errorOnNNScaled -> 0.005775149777
 
-Since I have tested my MLP's performance with three inputs, I had to test it again with different input scheme. I chose to have six inputs. I have applied the same steps for six inputs;
+Since the MLP's performance is tested with three inputs, it is needed to be examine one more time with different input scheme. For this purpose, six inputs are chosen for application of same test steps as the following;
 ```r
 sixDsExchangeNeuralNet <- neuralnet(Output~FirstInput + SecondInput + ThirdInput + FourthInput + FifthInput + SixthInput, sixDsExchangeTrainingData, hidden = 2)
 
@@ -333,7 +335,7 @@ colnames(sixDsTrainOutput) <- c("Expected Output", "Predicted Output", "ID")
 ```
 ![nn6](https://github.com/mpinar/MachineLearning/blob/master/NN%206%20input.png?raw=true)
 
-When we run the `compute` function we have got a prediction in our hands. I ran MAPE on the result and I almost have the same result as I get from three day input. You can inspect the code below, I am pasting the results right after the code.
+When the `compute` function is run, the result will be a prediction which running RMSE on the result give the same outputs as previously obtained from three day input. The code that gives the results and the obtained plots are given in the below.
 ```r
 sixDsCleanOutput <- cbind(as.data.frame(exchangeRateTest[4:67]), as.data.frame(sixDsExchangeResults$net.result), id= 1:length(sixDsFirstDayPred))
 colnames(sixDsCleanOutput) <- c("Expected Output", "Predicted Output", "ID")
@@ -362,7 +364,7 @@ ggplot(data=sixDsMeltedCumulativeOutput, aes(x=cumID, y=value, color=variable)) 
 
 ![nn6InputsCumu](https://github.com/mpinar/MachineLearning/blob/master/NN%206%20Input%20cumulative.png?raw=true)
 
-I wanted to test my Neural Net with six scaled inputs. I got the results same as I got from three scaled inputs, the results were worse.
+The six scaled inputs are also tested with Neural Net by applying the same strategy on the previous three input study. The obtained results are worse when compared to previous data.
 ```r
 model_nnSixDs <- train(sixDsExchangeTrainingData[,1:6], sixDsExchangeTrainingData[,7], method = 'neuralnet', 
                   preProcess = c("center", "scale"))
@@ -374,7 +376,7 @@ errorOnNNScaledSixDs
 ```
 > errorOnNNScaledSixDs -> 0.006306423344
 
-From this experiment we can see that Neural net gave almost the same answer with non-scaled three and six inputs. What we can clearly observe that it performs poorly with the scaled data. I have formed the table below, you can see the results below;
+From this experiment it can be seen that Neural net gives almost the same answer with non-scaled three and six inputs datasets, however the scaled data always give poorer results which is shown in the formed table below.
 
 | Error Table    |    Three Inputs | Six Inputs  |
 | :--------: | :--------:| :---------: |
@@ -383,14 +385,14 @@ From this experiment we can see that Neural net gave almost the same answer with
 
 #### Objective #4 (Forecasting using SVR)
 
-In this part we are going to use SVM Model for this forecasting problem. After the experiment is done we will have the chance to compare the results with ones we got from Neural Net. I will use the exact same dataset that I used for Neural Net for the sake of the experiments validity. I am going to test the SVM models for three and six inputs. To begin with, I subsetted the Exchange Training data by extracting the output, I need that dataset to form my formula for the SVM Model.
+In this part the SVM Model is used for forecasting problem. When the experiment is completed the results will be compared with the ones obtained from Neural Net. The exact same dataset is used which previously used for Neural Net for the safety and improvement of the experiment validity. The SVM models will be tested for three and six inputs. To begin with, the Exchange Training data is subsetted by extracting the output, which is required for that dataset to form the formula that is going to be used for the SVM Model.
 ```r
 library(e1071)
 
 svmExTrain <- subset(exchangeTrainingData, select = -Output)
 expectedOutput <- exchangeTrainingData$Output
 ```
-By following this I have got two datasets those will form my formula. With that information SVM model formed and with given test data the test had been conducted.
+By following this, tho datasets are obtained based on the application of created formula. With that information SVM model is formed and with given test data the test has been conducted.
 ```r
 exchangeSvmModel <- svm(svmExTrain,expectedOutput)
 beep("coin")
@@ -417,7 +419,7 @@ svm.default(x = svmExTrain, y = expectedOutput)
 
 >Number of Support Vectors:  240
 
-About the testing, I have done the same steps to the graph, that was I have added an ID column to melt the data on. The results were checked according to MAPE error calculation and model did a tramendous job according to Neural Net. So the code and  graphs for both prediction and cumulative below;
+About the testing, the same steps to the graph is achieved, that was the addition of an ID column to melt the data on. The results are checked according to RMSE error calculation and model work in an exceptional way according to Neural Net. Moreover, the code and graphs for both prediction and cumulative are given in the below;
 ```r
 errorOnSvm <- sqrt(mean((signif(predictedOutput, digits = 5) - exchangeRateTest[3:68])^2))
 ### Error calculation
@@ -433,7 +435,7 @@ ggplot(data=meltedOutputSvm, aes(x=ID, y=value, color=variable)) +
 
 ![threeInputs](https://github.com/mpinar/MachineLearning/blob/master/SVM%203%20inputs%20graph.png?raw=true)
 
-Following that changes after tunening the SVM model observed. `tune` function had been used. Aim of this part was whether output will have less error or not. 
+Following that part, the changes after tunening the SVM model are observed. The `tune` function had been used for this end. The main purpose of this part is to determine whether output will have less error or not compare to previous models. 
 ```r
 svmTune <- tune(svm, train.x = svmExTrain, train.y = expectedOutput, kernel= "radial",
                 ranges = list(cost= 10^(-1:2), gamma= seq(0,1, by= 0.01)))
@@ -448,7 +450,7 @@ print(svmTune)
   | 10 | 0.03 |
 > best performance: 0.00006320184555 
 
-SVM model tuned according to the information above, and test ran with the exact same procedure before. MAPE error calculation had been applied to the output;
+SVM model is tuned according to the information above, and test run with the exact same procedure that applied before. RMSE error calculation has applied to the output;
 ```r
 exchangeSvmModelTuned <- svm(svmExTrain,expectedOutput, gamma = 0.03, cost = 10)
 beep("coin")
@@ -474,7 +476,7 @@ Error output is;
 
 ![threeTuned](https://github.com/mpinar/MachineLearning/blob/master/SVM%203%20inputs%20tuned%20graph.png?raw=true)
 
-After tests with three inputs are done, tests with six inputs will be applied. Same input matrix as used in Neural net, will be used. Same procedure will be followed.
+After tests with three inputs are done, tests with six inputs will be applied. Same input matrix as used in Neural net will be used and the same procedure will be followed.
 ```r
 sixDsSvmExTrain <- subset(sixDsExchangeTrainingData, select = -Output)
 sixDsExpectedOutput <- sixDsExchangeTrainingData$Output
@@ -506,7 +508,7 @@ colnames(sixDsCleanOutputSvm) <- c("Expected Output", "Predicted Output", "ID")
     
 >Number of Support Vectors:  240
 
-For ploting the output and calculating the error using MAPE;
+For ploting the output and calculating the error using RMSE;
 ```r
 errorOnSvmSixD <- sqrt(mean((signif(sixDsPredictedOutput, digits = 5) - exchangeRateTest[6:69])^2))
 
@@ -519,7 +521,7 @@ ggplot(data=sixDsMeltedOutputSvm, aes(x=ID, y=value, color=variable)) +
 
 ![sixInputs](https://github.com/mpinar/MachineLearning/blob/master/SVM%206%20input%20graph.png?raw=true)
 
-We will observe how the predictions change after we tune the SVM;
+The changes in the  predictions after the tuning of the SVM is observed as the following;
 ```r
 sixDsSvmTune <- tune(svm, train.x = sixDsSvmExTrain, train.y = sixDsExpectedOutput, kernel= "radial",
                 ranges = list(cost= 10^(-1:2), gamma= seq(0,1, by= 0.01)))
@@ -534,7 +536,7 @@ sixDsSvmTune <- tune(svm, train.x = sixDsSvmExTrain, train.y = sixDsExpectedOutp
 > best performance: 0.00006409881733 
 
 
-After tuning the SVM according to the attributes above, I have ran the test all over again with the same processes as in three input tests.
+After tuning the SVM according to the attributes above, the test is run all over again with the same processes as in three input tests.
 ```r
 sixDsExchangeSvmModelTuned <- svm(sixDsSvmExTrain,sixDsExpectedOutput, gamma = 0.01, cost = 10)
 beep("coin")
@@ -557,7 +559,7 @@ ggplot(data=sixDsMeltedOutputSvmTuned, aes(x=ID, y=value, color=variable)) +
 
 ![sixTuned](https://github.com/mpinar/MachineLearning/blob/master/SVM%206%20input%20tuned.png?raw=true)
 
-After all these test, we can compare our results by checking the differences between three and six input systems and tuned systems. As we put a restriction on the errors that our model can do when we tune our SVM, we believed to have better results, lower error margins. Outcome of this experiment we can clearly say that tuning the model makes the regression more accurate. When we take one step behind to take a look at the big picture we can observe that we have got better results on SVMs than MLPs. Since we are passing more parameters to tune the SVM makes it an advanced version of a Neural Net. They both have their respective pros those are; Neural networks are extremely flexible in the types of data they can support and they do a decent job at learning the important features from any data structure. On the other side, SVMs require less grid-searching to get a reasonably accurate model. From the experiment above SVMs did a quite decent job.
+After all these test, the comparison can be achieved with the obtained results by checking the differences between three and six input systems and tuned systems. As there is a restriction on the errors that the model can achieve when SVM tuned, it is expected to have better results and lower error margins. Based on the outcomes of this experiment it can be clearly seen that tuning the model makes the regression more accurate. When considering one step behind to take have a broad horizon,  it is easy to observe that the results on SVMs is better than MLPs in case of lower error rate. Since more parameters are passing to tune the SVM, makes it an advanced version of a Neural Net. They both have their respective advantages. Neural networks are extremely flexible in the types of data they can support and they do a decent job at learning the important features from any data structure. On the other side, SVMs require less grid-searching to get a reasonably accurate model. As a final point based on the achieved analysis and experiments, the SVMs provide more accurate and consistent results, which also improved with tuning the model.
 
 | Error Table    |    Three Inputs | Six Inputs  |
 | :--------: | :--------:| :---------: |
