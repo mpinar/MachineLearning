@@ -2,7 +2,7 @@
 
 [![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
 
-Quality streaming framework can be determined by its data sources which require a powerful messaging platform to ensure solid performance.
+The quality of streaming framework can be determined by its data sources, which require a powerful messaging platform to provide solid performance.
 
 Spark Streaming supports the ingest of data from a wide range of data sources, including live streams from Apache Kafka, Apache Flume, Amazon Kinesis, Twitter, or sensors and other devices connected via TCP sockets. Data can also be streamed out of storage services such as HDFS and AWS S3. Data is processed by Spark Streaming, using a range of algorithms and high-level data processing functions like map, reduce, join and window. Processed data can then be passed to a range of external file systems, or used to populate live dashboards.
 
