@@ -41,7 +41,6 @@ summary(test)
 |5	|0	|3	|Allen, Mr. William Henry|	male|	35|	0|	0|	373450	|8.0500	|	S
 
 
-> Dataset summary image
 
 Since data was raw, some processes were essential for performance matters and logic issues.
 
@@ -172,7 +171,7 @@ Output ->
 >   familySize< 3.5 127  48 1 (0.37795276 0.62204724) *
 >   Pclass=1st,2nd 186  11 1 (0.05913978 0.94086022) *
 
-> DTreeHO Graph here
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/DTreeHO.png?raw=true)
 
 Second training by using Cross-Validation. This is for Random Forest;
 
@@ -210,7 +209,7 @@ Resampling results across tuning parameters:
 >Accuracy was used to select the optimal model using  the largest value.
 The final value used for the model was mtry = 12.
 
-> ##DTreeCV Graph Here
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/dTreeCVHO.png?raw=true)
 
 Model will be re-trained by using C4.5 algorithm with Cross-Validation method. I have tried to graph it but I couldn't do that in more fashionable way. Help from `RWeka` library has been used. This library is different than the other since almost all of the libraries those are used in R, is written in C, but RWeka is written in Java. So I had to give the path of my own Java application to make it work. 
 
@@ -338,6 +337,8 @@ Resampling results across tuning parameters:
 > Accuracy was used to select the optimal model using  the largest value.
 The final values used for the model were C = 0.3911111 and M = 1.
 
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/dTreeC45CV.png?raw=true)
+
 Third, we are going to use Leave-One-Out Cross-Validation method on Random Forest. When we discuss on time constraints Leave-One-Out method takes really long time. It took me around 2 hours for it to fail to complete the process on C4.5 algorithm.
 ```r
 dTreeLOO <- train(form, data = train, method = "rf", trControl = leaveOneOut, tuneLength =10, na.action = na.omit) # Training the model (Random Forest)
@@ -372,6 +373,8 @@ Resampling results across tuning parameters:
 
 > Accuracy was used to select the optimal model using  the largest value.
 The final value used for the model was cp = 0.
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/dTreeLOO%20graph.png?raw=true)
 
 Final part of this question, training the model by using C4.5 algorithm and Leave-one-out Cross Validation. Due to issues of the algorithm and the validation model, this code could not be completed. Systems crushed after 2 hours for 4 seperate tests with a machine powered by Intel i7 processor. Line of code is below;
 ```r
@@ -753,23 +756,28 @@ Decision Tree Hold-out
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(predictTest),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(predictTest) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.9464
-> Graph Here
+Area under the curve(RAUC): 0.9464
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20DTreeHO.png?raw=true)
 
 Decision Tree Cross-Validation
 >Call:
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(testPredCV),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(testPredCV) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.8482
+Area under the curve(RAUC): 0.8482
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/ROC%20of%20DTreeCV.png?raw=true)
+
 
 Decision Tree Leave-One-Out Cross-Validation
 >Call:
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(testPredLOO),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(testPredLOO) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.8482
->Graph here
+Area under the curve(RAUC): 0.8482
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20DTreeLOO.png?raw=true)
 
 Naive Bayes Hold-out
 
@@ -777,8 +785,9 @@ Naive Bayes Hold-out
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(nbPredictHO$class),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(nbPredictHO$class) in 152 controls (expectedOutput$Survived 1) < 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.4154
->Graph here
+Area under the curve(RAUC): 0.4154
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20nbHO.png?raw=true)
 
 Naive Bayes Cross-Validation
 
@@ -786,8 +795,9 @@ Naive Bayes Cross-Validation
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(nbPredictCV),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(nbPredictCV) in 152 controls (expectedOutput$Survived 1) < 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.3261
->Graph here
+Area under the curve(RAUC): 0.3261
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20nbCV.png?raw=true)
 
 Naive Bayes Leave-One-Out Cross Validation
 
@@ -795,8 +805,9 @@ Naive Bayes Leave-One-Out Cross Validation
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(nbPredictLOO),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(nbPredictLOO) in 152 controls (expectedOutput$Survived 1) < 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.3261
->Graph here
+Area under the curve(RAUC): 0.3261
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20nbLOO.png?raw=true)
 
 K-NN Hold-out
 
@@ -804,8 +815,9 @@ K-NN Hold-out
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(predictionHO),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(predictionHO) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.672
->Graph here
+Area under the curve(RAUC): 0.672
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20knnHO.png?raw=true)
 
 K-NN Cross-Validation
 
@@ -813,8 +825,9 @@ K-NN Cross-Validation
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(predictionCV),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(predictionCV) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.6593
->Graph Here
+Area under the curve(RAUC): 0.6593
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20knnCV.png?raw=true)
 
 K-NN Leave-One-Out Cross-Validation
 
@@ -822,8 +835,9 @@ K-NN Leave-One-Out Cross-Validation
 roc.default(response = expectedOutput$Survived, predictor = as.numeric(predictionLOO),     levels = rev(levels(expectedOutput$Survived)))
 
 >Data: as.numeric(predictionLOO) in 152 controls (expectedOutput$Survived 1) > 266 cases (expectedOutput$Survived 0).
-Area under the curve: 0.6739
->Graph Here
+Area under the curve(RAUC): 0.6739
+
+![](https://github.com/mpinar/MachineLearning/blob/master/CW2/roc%20of%20knnLOO.png?raw=true)
 
 
 
